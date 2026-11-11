@@ -30,7 +30,7 @@ jobs:
 
       - name: Build Packages (Example: yay-bin)
         run: |
-          su builder -c "cd /tmp && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -s --noconfirm"
+          sudo -u builder bash -c "cd /tmp && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -s --noconfirm"
           cp /tmp/yay-bin/*.pkg.tar.zst $GITHUB_WORKSPACE/x86_64/
 
       - name: Update Repository Database
