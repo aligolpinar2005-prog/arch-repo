@@ -26,6 +26,7 @@ jobs:
           useradd -m builder
           echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
           chown -R builder:builder ./
+
       - name: Build Packages
         run: |
           mkdir -p x86_64
@@ -35,12 +36,12 @@ jobs:
           rm -rf /tmp/yay-bin
           sudo -u builder bash -c "cd /tmp && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -s --noconfirm --skippgpcheck"
           cp /tmp/yay-bin/*.pkg.tar.zst x86_64/
-          
-          # 2. Paket: google-chrome
-          echo "Building google-chrome..."
-          rm -rf /tmp/google-chrome
-          sudo -u builder bash -c "cd /tmp && git clone https://aur.archlinux.org/google-chrome.git && cd google-chrome && makepkg -s --noconfirm --skippgpcheck"
-          cp /tmp/google-chrome/*.pkg.tar.zst x86_64/
+
+          # 2. Paket: paru-bin
+          echo "Building paru-bin..."
+          rm -rf /tmp/paru-bin
+          sudo -u builder bash -c "cd /tmp && git clone https://aur.archlinux.org/paru-bin.git && cd paru-bin && makepkg -s --noconfirm --skippgpcheck"
+          cp /tmp/paru-bin/*.pkg.tar.zst x86_64/
 
       - name: Update Repository Database
         run: |
