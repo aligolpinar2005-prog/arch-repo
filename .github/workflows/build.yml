@@ -23,9 +23,9 @@ jobs:
 
           git clone https://aur.archlinux.org/google-chrome.git /tmp/google-chrome
 
-          # Runner zaten normal kullanıcı olduğu için doğrudan makepkg çalıştırıyoruz
           cd /tmp/google-chrome
-          makepkg -si --noconfirm --skippgpcheck
+          # -i (kurulum) parametresini kaldırdık, sadece derleme yapıyoruz (-s)
+          makepkg -s --noconfirm --skippgpcheck
 
           echo "Derlenen paketler:"
           ls -la /tmp/google-chrome/
