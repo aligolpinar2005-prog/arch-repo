@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          lfs: true
 
       - name: Build Google Chrome Package
         run: |
@@ -35,11 +37,16 @@ jobs:
           repo-add arch-repo.db.tar.gz *.pkg.tar.zst
           cd ..
 
-      - name: Commit and Push Built Packages
+      - name: Commit and Push with Git LFS
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # -f parametresi ile gitignore engeline takılmadan x86_64 içeriğini ekliyoruz
+
+          # Git LFS ile .pkg.tar.zst uzantılı büyük dosyaları takip et
+          git lfs track "*.pkg.tar.zst"
+          git add .gitattributes
+
+          # Dosyaları zorla ekle ve LFS ile gönder
           git add -f x86_64/
-          git diff --staged --quiet || git commit -m "chore: update local arch repository packages [skip ci]"
+          git diff --staged --quiet || git commit -m "chore: update local arch repository packages with LFS [skip ci]"
           git push
