@@ -28,7 +28,11 @@ jobs:
           chown -R builder:builder ./
 
       - name: Build Packages
-        run:
+        run: |
+          sudo -u builder bash -c "cd /tmp && git clone https://aur.archlinux.org/yay-bin.git && cd yay-bin && makepkg -s --noconfirm --skippgpcheck"
+          mkdir -p x86_64
+          cp /tmp/yay-bin/*.pkg.tar.zst x86_64/
+
       - name: Update Repository Database
         run: |
           cd x86_64
@@ -36,8 +40,6 @@ jobs:
           repo-add arch-repo.db.tar.gz *.pkg.tar.zst
           cp arch-repo.db.tar.gz arch-repo.db
           cp arch-repo.files.tar.gz arch-repo.files
-
-     
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
