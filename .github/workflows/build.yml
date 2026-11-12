@@ -13,27 +13,35 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Prepare Builder User
+        run: |
+          id -u builder &>/dev/null || useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          chown -R builder:builder ${{ github.workspace }}
+
       - name: Build Google Chrome Package
         run: |
+          set -e  # Hata alırsan betiği hemen durdur ve hatayı göster
           mkdir -p x86_64
 
-          # Google Chrome paketini klonla ve yerelde derle
-          echo "Building google-chrome..."
+          echo "Building google-chrome as unprivileged user..."
           rm -rf /tmp/google-chrome
+
           git clone https://aur.archlinux.org/google-chrome.git /tmp/google-chrome
-          cd /tmp/google-chrome
+          chown -R builder:builder /tmp/google-chrome
 
-          # Self-hosted runner root veya normal kullanıcı ile çalışabileceği için makepkg -s komutu
-          makepkg -s --noconfirm --skippgpcheck
+          # Bağımlılıkları kurarak ve çıktıyı ekrana vererek derle
+          sudo -u builder bash -c "cd /tmp/google-chrome && makepkg -si --noconfirm --skippgpcheck"
 
-          # Derlenen paketi x86_64 deposuna kopyala
-          cp *.pkg.tar.zst ~/arch-repo/x86_64/
-          cd ~/arch-repo
+          echo "Derlenen paketler:"
+          ls -la /tmp/google-chrome/
+
+          cp /tmp/google-chrome/*.pkg.tar.zst x86_64/
 
       - name: Update Repository Database
         run: |
           cd x86_64
-          rm -f arch-repo.db* arch-repo.files*
+          ls -la
           repo-add arch-repo.db.tar.gz *.pkg.tar.zst
           cd ..
 
