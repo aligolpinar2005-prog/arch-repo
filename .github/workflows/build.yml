@@ -38,8 +38,6 @@ jobs:
           cd x86_64
           rm -f arch-repo.db arch-repo.files
           repo-add arch-repo.db.tar.gz *.pkg.tar.zst
-          cp arch-repo.db.tar.gz arch-repo.db
-          cp arch-repo.files.tar.gz arch-repo.files
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
