@@ -24,11 +24,7 @@ jobs:
           git clone https://aur.archlinux.org/google-chrome.git /tmp/google-chrome
 
           cd /tmp/google-chrome
-          # -i (kurulum) parametresini kaldırdık, sadece derleme yapıyoruz (-s)
           makepkg -s --noconfirm --skippgpcheck
-
-          echo "Derlenen paketler:"
-          ls -la /tmp/google-chrome/
 
           cp /tmp/google-chrome/*.pkg.tar.zst ${{ github.workspace }}/x86_64/
 
@@ -43,6 +39,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add x86_64/
+          # -f parametresi ile gitignore engeline takılmadan x86_64 içeriğini ekliyoruz
+          git add -f x86_64/
           git diff --staged --quiet || git commit -m "chore: update local arch repository packages [skip ci]"
           git push
